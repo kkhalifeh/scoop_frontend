@@ -1,20 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Provider } from 'react-redux';
+import store from './store';
+import { getData } from './utils/storage';
+import AppNavigator from './navigation/AppNavigator';
 
-export default function App() {
+const App = () => {
+  const [userDataLoaded, setUserDataLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      const userData = await getData('user');
+      if (userData) {
+        store.dispatch({ type: 'LOGIN', payload: userData });
+      }
+      setUserDataLoaded(true);
+    };
+
+    loadUserData();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      {userDataLoaded && <AppNavigator />}
+    </Provider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
