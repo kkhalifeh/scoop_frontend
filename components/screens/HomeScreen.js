@@ -21,6 +21,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to the Home Screen!</Text>
@@ -30,6 +31,7 @@ const HomeScreen = ({ navigation }) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

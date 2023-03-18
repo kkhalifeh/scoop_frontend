@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, getIdToken } from 'firebase/auth';
 import auth from './firebaseConfig';
 import { storeData } from '../utils/storage';
 
@@ -14,11 +14,19 @@ const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const { uid, email: userEmail, displayName, photoURL } = userCredential.user;
+    const firebaseToken = await userCredential.user.getIdToken();
+    console.log('TOKEN REACT', firebaseToken)
 
-    const userData = { uid, email: userEmail, displayName, photoURL };
+    const apiResponse = await api.post('/api/v1/firebase_sessions/create', { firebase_id_token: firebaseToken });
+
+    const railsApiToken = apiResponse.data.api_token;
+    const userData = { uid, email: userEmail, displayName, photoURL, apiToken: railsApiToken };
 
     // Store user data
     await storeData('user', userData);
+
+    // Update axios instance with API token
+    api.defaults.headers.common['Authorization'] = `Bearer ${railsApiToken}`;
 
     return userData;
   } catch (error) {
@@ -26,6 +34,7 @@ const loginUser = async (email, password) => {
     throw error;
   }
 };
+
 
 const logoutUser = async () => {
   try {
@@ -35,7 +44,6 @@ const logoutUser = async () => {
     throw error;
   }
 };
-
 
 export {
   loginUser,
