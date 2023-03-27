@@ -13,3 +13,10 @@ export const setUserAction = (user) => ({
 export const logoutUserAction = () => ({
   type: 'LOGOUT',
 });
+
+export const signUpUserAction = (user) => {
+  return {
+    type: 'SIGN_UP',
+    payload: user,
+  };
+};

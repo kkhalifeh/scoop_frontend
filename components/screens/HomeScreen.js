@@ -4,7 +4,7 @@ import { logoutUser } from '../../services/api'
 import { logoutUserAction } from '../../store/actions/userActions'
 import { useDispatch } from 'react-redux';
 import { removeData } from '../../utils/storage';
-
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const HomeScreen = ({ navigation }) => {
 
@@ -21,7 +21,33 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const Tab = createBottomTabNavigator();
 
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={HomeContent}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+      />
+      <Tab.Screen
+        name="Settings"
+      >
+        {() => <SettingsScreen />}
+      </Tab.Screen>
+      <Tab.Screen
+        name="Logout"
+      >
+        {() => <LogoutScreen handleLogout={handleLogout} />}
+      </Tab.Screen>
+    </Tab.Navigator>
+  );
+};
+
+const HomeContent = ({ handleLogout }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to the Home Screen!</Text>
@@ -30,8 +56,31 @@ const HomeScreen = ({ navigation }) => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
+const ProfileScreen = () => {
+  return (
+    <View style={styles.container}>
+    </View>
+  );
+}
+
+const SettingsScreen = () => {
+  return (
+    <View style={styles.container}>
+    </View>
+  );
+}
+
+const LogoutScreen = ({ handleLogout }) => {
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.button} onPress={handleLogout}>
+        <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {

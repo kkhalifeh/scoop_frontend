@@ -19,14 +19,20 @@ const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const handleLogin = async () => {
     try {
-      const user = await loginUser(email, password);
+      const { user, decodedToken } = await loginUser(email, password);
       dispatch(loginUserAction(user));
-      navigation.navigate('Home'); // 
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Error logging in:', error);
-      alert('Failed to log in. Please check your credentials and try again.');
+      alert(`${error}`);
     }
   };
+
+  // Disable back button
+  React.useLayoutEffect(() => {
+    navigation.setOptions({ headerLeft: null });
+  }, [navigation]);
+
 
   return (
     <View style={styles.container}>
@@ -48,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
       />
       <CustomButton onPress={handleLogin} title="Sign In" />
       <Text style={styles.linkText} onPress={() => navigation.navigate('ForgotPasswordScreen')}>Forgot Password?</Text>
-      <Text style={styles.linkText} onPress={() => navigation.navigate('RegisterScreen')}>Register</Text>
+      <CustomButton title="Sign Up" onPress={() => navigation.navigate('Sign Up')} />
       <CustomButton title="Continue with Google" />
       <CustomButton title="Continue with Apple" />
     </View>
